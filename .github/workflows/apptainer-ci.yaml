@@ -23,8 +23,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: ./
       - uses: eWaterCycle/setup-apptainer@v2.0.0
         with:
           apptainer-version: 1.3.2
       - name: Run apptainer container
-        run: apptainer version 
+        run: |
+            apptainer version
+            apptainer build apptainer.sif apptainer/apptainer.def
+            
