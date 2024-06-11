@@ -31,4 +31,5 @@ jobs:
         run: |
             apptainer version
             apptainer build apptainer.sif apptainer.def
+            apptainer exec apptainer.sif python --version
             
