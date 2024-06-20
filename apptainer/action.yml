@@ -56,6 +56,5 @@ runs:
       shell: bash
       run: |
         apptainer build python-base.sif apptainer.def \
-        apptainer login -u ${{ inputs.username }} -p ${{ inputs.password }} ${{ inputs.registry }} \
         apptainer push python-base.sif "${{ inputs.registry }}/${{ inputs.repo }}:${{ env.project-number }}-python-base-sif"
       working-directory: ${{ inputs.group_dir }}

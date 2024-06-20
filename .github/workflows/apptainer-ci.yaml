@@ -19,19 +19,19 @@ on:
     branches:
       - '*/apptainer-ci'
 jobs:
-  install:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: eWaterCycle/setup-apptainer@v2.0.0
         with:
           apptainer-version: 1.3.2
+      - name: Apptainer login to registry
+        run: apptainer login  -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ secrets.REGISTRY }}
       - uses: sramakintel/ai-containers/apptainer@sramakr1/apptainer-ci
         with:
-          registry: ${{ secrets.registry }}
-          repo: ${{ secrets.repo }}
-          username: $$ {{ secrets.username }}
-          password: $ {{ secrets.password }}
+          registry: ${{ secrets.REGISTRY }}
+          repo: ${{ secrets.REPO }}
 
 
 
