@@ -27,7 +27,7 @@ jobs:
         with:
           apptainer-version: 1.3.2
       - name: Apptainer login to registry
-        run: apptainer login  -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ secrets.REGISTRY }}
+        run: apptainer registry login  -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ secrets.REGISTRY }}
       - uses: sramakintel/ai-containers/apptainer@sramakr1/apptainer-ci
         with:
           registry: ${{ secrets.REGISTRY }}
