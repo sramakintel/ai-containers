@@ -55,6 +55,6 @@ runs:
     - name: Build Apptainer
       shell: bash
       run: |
-        apptainer build python-base.sif apptainer.def \
+        apptainer build python-base.sif apptainer.def 
         apptainer push python-base.sif "${{ inputs.registry }}/${{ inputs.repo }}:${{ env.project-number }}-python-base-sif"
       working-directory: ${{ inputs.group_dir }}
