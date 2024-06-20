@@ -48,6 +48,3 @@ From: {{BASE_IMAGE_NAME}}:{{ BASE_IMAGE_TAG}}
 
     python -m pip --no-cache-dir install --upgrade pip
     python -m pip --no-cache-dir install -r requirements.txt
-
-%run 
-    python --version
