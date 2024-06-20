@@ -19,17 +19,20 @@ on:
     branches:
       - '*/apptainer-ci'
 jobs:
-  build:
+  install:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: eWaterCycle/setup-apptainer@v2.0.0
         with:
           apptainer-version: 1.3.2
-      - name: Run apptainer container
-        working-directory: ./apptainer
-        run: |
-            apptainer version
-            apptainer build apptainer.sif apptainer.def
-            apptainer exec apptainer.sif python --version
+      - uses: sramakintel/ai-containers/apptainer@6b01d364e08aba5f783f6be904fe5ed36d1895cf
+        with:
+          registry: ${{ secrets.registry }}
+          repo: ${{ secrets.repo }}
+          username: $$ {{ secrets.username }}
+          password: $ {{ secrets.password }}
+
+
+
             
