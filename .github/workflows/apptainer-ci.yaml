@@ -20,7 +20,7 @@ on:
       - '*/apptainer-ci'
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: icx-1046
     steps:
       - uses: actions/checkout@v4
       - uses: eWaterCycle/setup-apptainer@v2.0.0
