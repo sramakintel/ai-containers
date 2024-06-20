@@ -24,7 +24,7 @@ From: {{BASE_IMAGE_NAME}}:{{ BASE_IMAGE_TAG}}
     export DEBIAN_FRONTEND=noninteractive
     
 %files
-    requirements.txt .
+    ../python/requirements.txt .
 
 %post
     apt-get update -y && \
