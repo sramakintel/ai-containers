@@ -6,17 +6,29 @@ Test Runner is a simple automated testing framework for replicating and validati
 
 These steps assume you are using a modern Linux OS like [Ubuntu 22.04](https://www.releases.ubuntu.com/jammy/) with [Python 3.10+](https://www.python.org/downloads/release/python-3100/).
 
+### Install Test Runner
+
 ```bash
 git clone https://github.com/intel/ai-containers
 pip install -r ai-containers/test-runner/requirements.txt
+```
+
+### Create Tests Definition File
+
+```bash
 touch tests.yaml
+```
+
+### Run test file
+
+```bash
 python ai-containers/test-runner/test_runner.py -f tests.yaml
 ```
 
 1. Install the python requirements file
-2. Create a `tests.yaml` file in your project's test directory
+2. Create a `tests.yaml` [file](#create-tests-definition-file) in your project's test directory
 3. Add a [test](#test-definition) to the `tests.yaml` file
-4. Run the Test Runner application command line interface to execute the test
+4. [Run the Test Runner application](#run-test-file) command line interface to execute the test
 
 ### Test Definition
 
@@ -47,6 +59,15 @@ A test is defined as a set of commands to be executed along with their associate
 > [!TIP]
 > To find more information about each property, click on the attribute link to see it's OCI spec definition. To see the list of default values used for each property, see the [class definition](utils/test.py#L18).
 
+#### Tests Definition Example
+
+A sample minimal tests.yaml file will look like this:
+
+```yaml
+test_name:
+  cmd: something -you <want|the|test_runner> --todo
+```
+
 ### Advanced Tests
 
 There are two more complex properties that can be enabled to provide additional functionality to your tests.
@@ -55,19 +76,39 @@ There are two more complex properties that can be enabled to provide additional 
 
 Environment variables can be set for a test by providing a dictionary of key-value pairs in the `env` property of the test definition. These environment variables will be set when the test is executed using the [`expandvars`](https://pypi.org/project/expandvars/) library.
 
-Here's an example of a test definition with environment variables:
+Here's an example of a test definition using environment variables:
 
 ```yaml
 test:
   cmd: echo "${VAR1:-hello}"
 ```
 
+Execution:
+
 ```bash
 python test-runner/test_runner.py -f path/to/tests.yaml
-VAR=world python test-runner/test_runner.py -f path/to/tests.yaml
+VAR1=world python test-runner/test_runner.py -f path/to/tests.yaml
 ```
 
 In the example above, the first output will be `hello`, and the second output will be `world`.
+
+Modifying the above example to use the `env` dictionary option:
+
+```yaml
+test:
+  cmd: echo "${VAR1:-hello}"
+  env:
+    VAR1: "Yo!"
+```
+
+Execution:
+
+```bash
+python test-runner/test_runner.py -f path/to/tests.yaml
+VAR1=world python test-runner/test_runner.py -f path/to/tests.yaml
+```
+
+In this instance, the default value of `hello` is overridden first by the value in the `env` variable dictionary, and then by the value passed on the test command line. Thus, the first output will be `Yo!`, and the second output will be `world`.
 
 > [!TIP]
 > It is a best practice to set a default value in the case where `VAR1` is not set with `:-<value>`, if the environment variable is not set for whatever reason, the test runner application will fail the test.
@@ -164,7 +205,7 @@ There are two modes for running the tests: baremetal and container.
 
 #### Baremetal
 
-In baremetal mode, the test command is executed directly on the host system. This mode is used when the img attribute is not provided in the test definition.
+In baremetal mode, the test command is executed directly on the host system. This mode is implied when the `img` key/value pair is not provided in the test definition.
 
 Example of a test definition for baremetal mode:
 
@@ -203,22 +244,21 @@ This composite action clones this repository just as in the [quickstart](#quicks
 Inputs for the action:
 
 ```yaml
-  mlops_repo:
-    description: 'Test Runner org/repo'
-    required: true
-    type: string
-  mlops_ref:
-    description: 'Test Runner Branch/Tag'
+  cache_registry:
+    description: 'Container Cache Registry URL'
     required: false
-    default: develop
+    type: string
+  perf_repo:
+    description: 'Performance Test Repo'
+    required: false
     type: string
   recipe_dir:
     description: 'Path to Recipe Directory'
-    required: false
+    required: true
     type: string
   registry:
     description: 'Container Registry URL'
-    required: true
+    required: false
     type: string
   repo:
     description: 'Container Repository'
@@ -237,3 +277,16 @@ See an [Example](../.github/workflows/test-runner-ci.yaml#L94) Implementation of
 
 > [!TIP]
 > When writing Tests for use with a CI platform like GitHub Actions, write your tests in such a way that they would be executed from the root directory of your repository.
+
+## Testing
+
+For testing [tests.yaml](tests.yaml) file, some variables need to be set
+
+```bash
+export CACHE_REGISTRY=<harbor cache_registry_name>
+export REGISTRY=<harbor registry>
+export REPO=<harbor project/repo>
+# optional
+export PERF_REPO=<internal perf repo>
+python test-runner/test_runner.py -f test-runner/tests.yaml -a test-runner/.actions.json
+```
