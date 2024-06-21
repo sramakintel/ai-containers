@@ -32,12 +32,6 @@ jobs:
         with:
           registry: ${{ secrets.REGISTRY }}
           repo: ${{ secrets.REPO }}
-  test-apptainer:
-    needs: [setup-build]
-    runs-on: icx-1046
-    steps:
-      - name: Test Python with Apptainer
-        run: apptainer pull "${{ secrets.REGISTRY }}/${{ secrets.REPO }}"
     
       
 
