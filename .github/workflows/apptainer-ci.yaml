@@ -13,26 +13,32 @@
 # limitations under the License.
 
 name: Apptainer CI
-on:
-  pull_request:
-  push:
-    branches:
-      - '*/apptainer-ci'
+# on:
+#   pull_request:
+#   push:
+#     branches:
+#       - '*/apptainer-ci'
 jobs:
-  build:
+  setup-build:
     runs-on: icx-1046
     steps:
       - uses: actions/checkout@v4
-      # - uses: eWaterCycle/setup-apptainer@v2.0.0
-      #   with:
-      #     apptainer-version: 1.3.2
+      - uses: eWaterCycle/setup-apptainer@v2.0.0
+        with:
+          apptainer-version: 1.3.2
       - name: Apptainer login to registry
         run: apptainer registry login  -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }} ${{ secrets.REGISTRY }}
       - uses: sramakintel/ai-containers/apptainer@sramakr1/apptainer-ci
         with:
           registry: ${{ secrets.REGISTRY }}
           repo: ${{ secrets.REPO }}
-
-
+  test-apptainer:
+    needs: [setup-build]
+    runs-on: icx-1046
+    steps:
+      - name: Test Python with Apptainer
+        run: apptainer pull "${{ secrets.REGISTRY }}/${{ secrets.REPO }}"
+    
+      
 
             
